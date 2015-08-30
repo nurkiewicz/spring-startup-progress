@@ -6,19 +6,26 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.context.embedded.EmbeddedServletContainer;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
+import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
+import rx.Observable;
+import rx.subjects.ReplaySubject;
+import rx.subjects.Subject;
 
-public class ProgressBeanPostProcessor implements BeanPostProcessor {
+class ProgressBeanPostProcessor implements BeanPostProcessor, ApplicationListener<ContextRefreshedEvent> {
 
 	private static final Logger log = LoggerFactory.getLogger(ProgressBeanPostProcessor.class);
 
-	@Override
+	private static final Subject<String, String> beans = ReplaySubject.create();
+
 	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
 		return bean;
 	}
 
 	@Override
 	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-		log.info("Bean started: {} of type {}", beanName, bean.getClass());
+		beans.onNext(beanName);
 		return wrapIfServletContainerFacotory(bean);
 	}
 
@@ -31,12 +38,23 @@ public class ProgressBeanPostProcessor implements BeanPostProcessor {
 	}
 
 	private EmbeddedServletContainerFactory wrap(EmbeddedServletContainerFactory factory) {
-		log.debug("Returning eager wrapper over {}", factory);
+		if (factory instanceof TomcatEmbeddedServletContainerFactory) {
+			((TomcatEmbeddedServletContainerFactory) factory).addContextValves(new ProgressValve());
+		}
 		return initializers -> {
 			final EmbeddedServletContainer container = factory.getEmbeddedServletContainer(initializers);
 			log.debug("Eagerly starting {}", container);
 			container.start();
 			return container;
 		};
+	}
+
+	@Override
+	public void onApplicationEvent(ContextRefreshedEvent event) {
+		beans.onCompleted();
+	}
+
+	static Observable<String> observe() {
+		return beans;
 	}
 }

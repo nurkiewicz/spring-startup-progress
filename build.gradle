@@ -1,45 +1,47 @@
 buildscript {
-    ext {
-        springBootVersion = '1.3.0.M4'
-    }
-    repositories {
-        mavenCentral()
-        maven { url "https://repo.spring.io/snapshot" }
-        maven { url "https://repo.spring.io/milestone" }
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}") 
-    }
+	ext {
+		springBootVersion = '1.3.0.M4'
+	}
+	repositories {
+		mavenCentral()
+		maven { url "https://repo.spring.io/snapshot" }
+		maven { url "https://repo.spring.io/milestone" }
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
 }
 
 apply plugin: 'java'
-apply plugin: 'spring-boot' 
+apply plugin: 'spring-boot'
 
 jar {
-    baseName = 'demo'
-    version = '0.0.1-SNAPSHOT'
+	baseName = 'demo'
+	version = '0.0.1-SNAPSHOT'
 }
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 repositories {
-    mavenCentral()
-    maven { url "https://repo.spring.io/snapshot" }
-    maven { url "https://repo.spring.io/milestone" }
+	mavenCentral()
+	maven { url "https://repo.spring.io/snapshot" }
+	maven { url "https://repo.spring.io/milestone" }
 }
 
 
 dependencies {
-    compile("org.springframework.boot:spring-boot-starter-actuator")
-    compile("org.springframework.boot:spring-boot-starter-data-jpa")
-    compile("org.springframework.boot:spring-boot-starter-web")
-    compile("com.google.guava:guava:18.0")
-    runtime("com.h2database:h2")
-    testCompile("org.springframework.boot:spring-boot-starter-test") 
+	compile("org.springframework.boot:spring-boot-starter-actuator")
+	compile("org.springframework.boot:spring-boot-starter-data-jpa")
+	compile("org.springframework.boot:spring-boot-starter-web")
+	compile("com.google.guava:guava:18.0")
+	compile 'io.reactivex:rxjava:1.0.14'
+
+	runtime("com.h2database:h2")
+	testCompile("org.springframework.boot:spring-boot-starter-test")
 }
 
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.6'
+	gradleVersion = '2.6'
 }
