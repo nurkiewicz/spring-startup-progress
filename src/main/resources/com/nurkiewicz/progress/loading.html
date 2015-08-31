@@ -3,13 +3,88 @@
 <head>
     <meta charset="utf-8">
     <title>Loading</title>
+    <style type="text/css">
+        h2 {
+            font-family: Consolas, "Liberation Mono", Courier, monospace;
+            padding: 0;
+            margin: 0;
+        }
+        .done { color: green; }
+        .done:before { content: "\2714" }
+        .waiting { color: orange; }
+        .waiting:before { content: "\231B" }
+    </style>
 </head>
 <body>
-<h1>Website is loading, be patient...</h1>
+<h1>Website is loading (<span class="progress"></span>%):</h1>
+
+<h2 data-bean="websocketContainerCustomizer" class="waiting">
+    Web socket support
+</h2>
+
+<h2 data-bean="messageConverters" class="waiting">
+    Spring MVC
+</h2>
+
+<h2 data-bean="metricFilter" class="waiting">
+    Metrics
+</h2>
+
+<h2 data-bean="endpointMBeanExporter" class="waiting">
+    Actuator
+</h2>
+
+<h2 data-bean="mongoTemplate" class="waiting">
+    MongoDB
+</h2>
+
+<h2 data-bean="dataSource" class="waiting">
+    Database
+</h2>
+
+<h2 data-bean="entityManagerFactory" class="waiting">
+    Hibernate
+</h2>
+
+<h2 data-bean="jpaContext" class="waiting">
+    JPA
+</h2>
+
+<h2 data-bean="redisTemplate" class="waiting">
+    Redis
+</h2>
+
+<h2 data-bean="elasticsearchClient" class="waiting">
+    Elasticsearch
+</h2>
+
+<h2 data-bean="integrationEvaluationContext" class="waiting">
+    Spring integration
+</h2>
+
+<h2 data-bean="mbeanExporter" class="waiting">
+    JMX support
+</h2>
+
+<h2 data-bean="jmsMessagingTemplate" class="waiting">
+    JMS
+</h2>
+
+<h2 data-bean="slow-9" class="waiting">
+    User component
+</h2>
 <script>
     var source = new EventSource('init.stream');
+    var initialized = 0;
+    var total = 271;
     source.addEventListener('message', function (e) {
-        console.log(e.data);
+        var h2 = document.querySelector('h2[data-bean="' + e.data + '"]');
+        if(h2) {
+            h2.className = 'done';
+        }
+        ++initialized;
+        var percent = Math.min(100, Math.round(100 * initialized / total));
+        document.querySelector('.progress').innerHTML = percent;
     });
 
     source.addEventListener('complete', function (e) {

@@ -33,6 +33,13 @@ repositories {
 dependencies {
 	compile("org.springframework.boot:spring-boot-starter-actuator")
 	compile("org.springframework.boot:spring-boot-starter-data-jpa")
+	compile("org.springframework.boot:spring-boot-starter-data-mongodb")
+	compile("org.springframework.boot:spring-boot-starter-batch")
+	compile("org.springframework.boot:spring-boot-starter-data-elasticsearch")
+	compile("org.springframework.boot:spring-boot-starter-hornetq")
+	compile("org.springframework.boot:spring-boot-starter-integration")
+	compile("org.springframework.boot:spring-boot-starter-mail")
+	compile("org.springframework.boot:spring-boot-starter-redis")
 	compile("org.springframework.boot:spring-boot-starter-web")
 	compile("com.google.guava:guava:18.0")
 	compile 'io.reactivex:rxjava:1.0.14'
