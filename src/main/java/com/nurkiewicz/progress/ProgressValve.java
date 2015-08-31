@@ -55,10 +55,18 @@ public class ProgressValve extends ValveBase {
 		resp.flushBuffer();
 		final Subscription subscription = ProgressBeanPostProcessor.observe()
 				.map(beanName -> "data: " + beanName)
-				.doOnCompleted(asyncContext::complete)
 				.subscribeOn(Schedulers.io())
-				.subscribe(event -> stream(event, asyncContext.getResponse()));
+				.subscribe(
+						event -> stream(event, asyncContext.getResponse()),
+						e -> log.error("Error in observe()", e),
+						() -> complete(asyncContext)
+				);
 		unsubscribeOnDisconnect(asyncContext, subscription);
+	}
+
+	private void complete(AsyncContext asyncContext) {
+		stream("event: complete\ndata:", asyncContext.getResponse());
+		asyncContext.complete();
 	}
 
 	private void unsubscribeOnDisconnect(AsyncContext asyncContext, final Subscription subscription) {

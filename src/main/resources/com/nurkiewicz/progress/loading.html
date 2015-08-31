@@ -2,10 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="refresh" content="1" >
     <title>Loading</title>
 </head>
 <body>
 <h1>Website is loading, be patient...</h1>
+<script>
+    var source = new EventSource('init.stream');
+    source.addEventListener('message', function (e) {
+        console.log(e.data);
+    });
+
+    source.addEventListener('complete', function (e) {
+        window.location.reload();
+    });
+</script>
 </body>
 </html>

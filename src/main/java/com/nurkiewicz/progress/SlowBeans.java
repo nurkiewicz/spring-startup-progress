@@ -17,7 +17,7 @@ public class SlowBeans implements BeanDefinitionRegistryPostProcessor {
 	@Override
 	public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
 		IntStream
-				.range(0, 10000)
+				.range(0, 100)
 				.forEach(i -> registry.registerBeanDefinition(
 						"slow-" + i,
 						new RootBeanDefinition(SlowBean.class)));
