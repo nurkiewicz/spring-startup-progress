@@ -26,10 +26,10 @@ class ProgressBeanPostProcessor implements BeanPostProcessor, ApplicationListene
 	@Override
 	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
 		beans.onNext(beanName);
-		return wrapIfServletContainerFacotory(bean);
+		return wrapIfServletContainerFactory(bean);
 	}
 
-	private Object wrapIfServletContainerFacotory(Object bean) {
+	private Object wrapIfServletContainerFactory(Object bean) {
 		if (bean instanceof EmbeddedServletContainerFactory) {
 			return wrap((EmbeddedServletContainerFactory) bean);
 		} else {
